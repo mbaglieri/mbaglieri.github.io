@@ -60,7 +60,7 @@ function addLatLng(event) {
     draggable:false, labelContent:"asdasd" ,
     map: map
   });
-  var latLng = [event.latLng.lng(),event.latLng.lat()]
+  var latLng = [event.latLng.lat(),event.latLng.lng()]
   arry_lat.push(latLng)
   document.getElementById('markers').innerHTML = JSON.stringify(arry_lat);
 }
