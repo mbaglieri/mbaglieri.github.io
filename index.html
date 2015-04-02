@@ -60,7 +60,7 @@ function addLatLng(event) {
     draggable:false, labelContent:"asdasd" ,
     map: map
   });
-  document.getElementById('markers').innerHTML += event.latLng.lat()+","+event.latLng.lng()+",";
+  document.getElementById('markers').innerHTML += "["+event.latLng.lat()+","+event.latLng.lng()+"]"+",";
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
