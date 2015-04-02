@@ -19,7 +19,7 @@
 
 var poly;
 var map;
-
+var arry_lat = []
 function initialize() {
   var mapOptions = {
     zoom: 7,
@@ -60,7 +60,9 @@ function addLatLng(event) {
     draggable:false, labelContent:"asdasd" ,
     map: map
   });
-  document.getElementById('markers').innerHTML += "["+event.latLng.lat()+","+event.latLng.lng()+"]"+",";
+  var latLng = [event.latLng.lat(),event.latLng.lng()]
+  arry_lat.push(latLng)
+  document.getElementById('markers').innerHTML = JSON.stringify(arry_lat);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
