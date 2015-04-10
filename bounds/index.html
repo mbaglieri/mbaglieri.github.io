@@ -56,10 +56,10 @@
         $.get("http://overpass-api.de/api/interpreter?data=" + params).success(function(json) {
           var relationId = null;
           $.each(json.elements, function(index, value) {
-            if(value.tags.border_type == "city") {
+            if((value.tags.admin_level == "8" && value.tags.border_type == null) || value.tags.border_type == "city") {
               // Removing 3600 start
-              var valueId = value.id + ""
-              relationId = valueId.substring(4);
+              relationId = value.id - 3600000000;
+              return
             }
           });
 
