@@ -3,6 +3,16 @@
   <head>
     <title>Complex Polylines</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <meta charset="utf-8">
     <style>
       html, body, #map-canvas {
@@ -21,6 +31,16 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
 
+      #panel {
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
       #pac-input {
         background-color: #fff;
         font-family: Roboto;
@@ -55,125 +75,163 @@
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&signed_in=true&libraries=places"></script>
     <script>
-// This example creates an interactive map which constructs a
-// polyline based on user clicks. Note that the polyline only appears
-// once its path property contains two LatLng coordinates.
 
-var poly;
-var map;
-var arry_lat = []
-function initialize() {
-  alert("aca")
-  var markers = [];
-  var mapOptions = {
-    zoom: 7,
-    // Center the map on Chicago, USA.
-    center: new google.maps.LatLng(41.879535, -87.624333)
-  };
+      var poly;
+      var map;
+      var arry_lat = []
+      var arry_markers = []
+      function initialize() {
+        var markers = [];
+        var mapOptions = {
+          zoom: 7,
+          // Center the map on Chicago, USA.
+          center: new google.maps.LatLng(41.879535, -87.624333)
+        };
 
-  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-  var polyOptions = {
-    strokeColor: '#000000',
-    strokeOpacity: 1.0,
-    strokeWeight: 3
-  };
-  poly = new google.maps.Polyline(polyOptions);
-  poly.setMap(map);
+        var polyOptions = {
+          strokeColor: '#000000',
+          strokeOpacity: 1.0,
+          strokeWeight: 3
+        };
+        poly = new google.maps.Polyline(polyOptions);
+        poly.setMap(map);
 
-  // Add a listener for the click event
-  google.maps.event.addListener(map, 'click', addLatLng);
-  
-  // Create the search box and link it to the UI element.
-  var input = /** @type {HTMLInputElement} */(
-      document.getElementById('pac-input'));
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        // Add a listener for the click event
+        google.maps.event.addListener(map, 'click', addLatLng);
+        
+        // Create the search box and link it to the UI element.
+        var input = /** @type {HTMLInputElement} */(
+            document.getElementById('pac-input'));
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-  var searchBox = new google.maps.places.SearchBox(
-    /** @type {HTMLInputElement} */(input));
+        var searchBox = new google.maps.places.SearchBox(
+          /** @type {HTMLInputElement} */(input));
 
-  // [START region_getplaces]
-  // Listen for the event fired when the user selects an item from the
-  // pick list. Retrieve the matching places for that item.
-  google.maps.event.addListener(searchBox, 'places_changed', function() {
-    var places = searchBox.getPlaces();
+        // [START region_getplaces]
+        // Listen for the event fired when the user selects an item from the
+        // pick list. Retrieve the matching places for that item.
+        google.maps.event.addListener(searchBox, 'places_changed', function() {
+          var places = searchBox.getPlaces();
 
-    if (places.length == 0) {
-      return;
-    }
-    for (var i = 0, marker; marker = markers[i]; i++) {
-      marker.setMap(null);
-    }
+          if (places.length == 0) {
+            return;
+          }
+          for (var i = 0, marker; marker = markers[i]; i++) {
+            marker.setMap(null);
+          }
 
-    // For each place, get the icon, place name, and location.
-    markers = [];
-    var bounds = new google.maps.LatLngBounds();
-    for (var i = 0, place; place = places[i]; i++) {
-      var image = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
+          // For each place, get the icon, place name, and location.
+          markers = [];
+          var bounds = new google.maps.LatLngBounds();
+          for (var i = 0, place; place = places[i]; i++) {
+            var image = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
 
-      // Create a marker for each place.
-      var marker = new google.maps.Marker({
-        map: map,
-        icon: image,
-        title: place.name,
-        position: place.geometry.location
-      });
+            // Create a marker for each place.
+            var marker = new google.maps.Marker({
+              map: map,
+              icon: image,
+              title: place.name,
+              position: place.geometry.location
+            });
 
-      markers.push(marker);
+            markers.push(marker);
 
-      bounds.extend(place.geometry.location);
-    }
+            bounds.extend(place.geometry.location);
+          }
 
-    map.fitBounds(bounds);
-  });
-  // [END region_getplaces]
+          map.fitBounds(bounds);
+          map.setZoom(9);
+        });
+        // [END region_getplaces]
 
-  // Bias the SearchBox results towards places that are within the bounds of the
-  // current map's viewport.
-  google.maps.event.addListener(map, 'bounds_changed', function() {
-    var bounds = map.getBounds();
-    searchBox.setBounds(bounds);
-  });
-}
+        // Bias the SearchBox results towards places that are within the bounds of the
+        // current map's viewport.
+        google.maps.event.addListener(map, 'bounds_changed', function() {
+          var bounds = map.getBounds();
+          searchBox.setBounds(bounds);
+        });
+      }
 
-/**
- * Handles click events on a map, and adds a new point to the Polyline.
- * @param {google.maps.MouseEvent} event
- */
-function addLatLng(event) {
+      /**
+       * Handles click events on a map, and adds a new point to the Polyline.
+       * @param {google.maps.MouseEvent} event
+       */
+      function addLatLng(event) {
 
-  var path = poly.getPath();
+        var path = poly.getPath();
 
-  // Because path is an MVCArray, we can simply append a new coordinate
-  // and it will automatically appear.
-  path.push(event.latLng);
+        // Because path is an MVCArray, we can simply append a new coordinate
+        // and it will automatically appear.
+        path.push(event.latLng);
 
-  // Add a new marker at the new plotted point on the polyline.
-  var marker = new google.maps.Marker({
-    position: event.latLng,
-      title: 'Hello World!',
-    draggable:false, labelContent:"asdasd" ,
-    map: map
-  });
-  var latLng = [event.latLng.lat(),event.latLng.lng()]
-  arry_lat.push(latLng)
-  document.getElementById('markers').innerHTML = JSON.stringify(arry_lat);
-}
+        // Add a new marker at the new plotted point on the polyline.
+        var marker = new google.maps.Marker({
+          position: event.latLng,
+            title: 'Hello World!',
+          draggable:false, labelContent:"asdasd" ,
+          map: map
+        });
+        var latLng = [event.latLng.lat(),event.latLng.lng()]
+        arry_lat.push(latLng)
+        arry_markers.push(marker)
+        document.getElementById('markers').innerHTML = JSON.stringify(arry_lat);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
 
-google.maps.event.addDomListener(window, 'load', initialize);
+      
+      // Sets the map on all markers in the array.
+      function setAllMap(map) {
+        for (var i = 0; i < arry_markers.length; i++) {
+          arry_markers[i].setMap(map);
+        }
+      }
 
+      // Removes the markers from the map, but keeps them in the array.
+      function clearMarkers() {
+        setAllMap(null);
+      }
+
+      // Shows any markers currently in the array.
+      function showMarkers() {
+        setAllMap(map);
+      }
+
+      // Deletes all markers in the array by removing references to them.
+      function deleteMarkers() {
+        arry_lat = [];
+
+        poly.setMap(null);
+        clearMarkers();
+        var polyOptions = {
+          strokeColor: '#000000',
+          strokeOpacity: 1.0,
+          strokeWeight: 3
+        };
+        poly = new google.maps.Polyline(polyOptions);
+        poly.setMap(map);
+        document.getElementById('markers').innerHTML = "";
+      }
+      function copyMarkers(){
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", document.getElementById('markers').innerHTML);
+      }
     </script>
   </head>
   <body>
+
+    <div id="panel">
+      <input onclick="copyMarkers();" type=button value="Copy Markers">
+      <input onclick="deleteMarkers();" type=button value="Delete Markers">
+    </div>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map-canvas"></div>
-
     <div id="markers" style = "float:left;width:10%"></div>
   </body>
 </html>
