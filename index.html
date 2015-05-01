@@ -220,7 +220,8 @@
         document.getElementById('markers').innerHTML = "";
       }
       function copyMarkers(){
-        window.prompt("Copy to clipboard: Ctrl+C, Enter", document.getElementById('markers').innerHTML);
+        var promptValue = prompt('Copy to clipboard: Ctrl+C, Enter', document.getElementById('markers').innerHTML);
+        deleteMarkers();
       }
     </script>
   </head>
