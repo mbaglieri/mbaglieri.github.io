@@ -222,6 +222,8 @@
       function copyMarkers(){
         var promptValue = prompt('Copy to clipboard: Ctrl+C, Enter', document.getElementById('markers').innerHTML);
         deleteMarkers();
+        var city = document.getElementById('pac-input').value.split(',');
+        document.getElementById('pac-input').value = "," + city[city.length -1];
       }
     </script>
   </head>
